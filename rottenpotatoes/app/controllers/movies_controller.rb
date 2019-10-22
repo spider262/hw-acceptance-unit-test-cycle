@@ -1,7 +1,7 @@
 class MoviesController < ApplicationController
   
   def movie_params
-    params.require(:movie).permit(:title, :rating, :description, :release_date)
+    params.require(:movie).permit(:title, :rating, :description, :release_date, :director)
   end
 
   def show
@@ -17,6 +17,8 @@ class MoviesController < ApplicationController
       ordering,@title_header = {:title => :asc}, 'hilite'
     when 'release_date'
       ordering,@date_header = {:release_date => :asc}, 'hilite'
+    when 'director'
+      ordering,@director_header = {:director => :asc}, 'hilite'
     end
     @all_ratings = Movie.all_ratings
     @selected_ratings = params[:ratings] || session[:ratings] || {}
@@ -59,6 +61,20 @@ class MoviesController < ApplicationController
     @movie.destroy
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
+  end
+  
+  def director
+    @movie = Movie.find(params[:id])
+    # @director = @movie.director
+    # Handle the third path 
+    if @movie.director.blank?
+    #if @director.blank?
+      flash[:notice] = "'#{@movie.title}' has no director info"
+      redirect_to movies_path and return
+    else
+      @movies = @movie.same_director
+    end
+    @movie = @movie.same_director
   end
 
 end
