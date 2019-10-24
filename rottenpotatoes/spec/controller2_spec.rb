@@ -16,10 +16,10 @@ describe MoviesController, type: :controller do
         end
         context "When specified movie has no director" do
             it 'should assign similar movies if director exists' do
-              movies = ['Seven', 'The Social Network']
-              Movie.stub(:director).with('Seven').and_return(movies)
-              get :search, { title: 'Seven' }
-              expect(assigns(:same_director)).to eql(movies)
+                movie1 = Movie.create(:title => 'fake', :director => 'fake_director')
+                movie2 = Movie.create(:title => 'fake2', :director => 'fake_director')
+                get :director, {:id => "#{movie1.id}"}#"#{@fake_movie2.id}"}
+                expect(response).to render_template(:director)
             end
         end
     end
